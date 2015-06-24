@@ -4,7 +4,6 @@ $.fn.twitterFetcher = function (settings) {
 		widgetid: null,
 		maxTweets: 20,
 		enableLinks: true,
-		showFollowers: true,
 		showImages: false,
 		showRetweet: true,
 		lang: "it",
@@ -85,7 +84,7 @@ $.fn.twitterFetcher = function (settings) {
 								c2[i] + '\n' +
 							'</a>\n&nbsp;-&nbsp;\n';
 			
-				if(settings.permalink===true){
+				if(settings.enablePermalink===true){
 			 		html += '<a class="permalink" href="'+f[i]+'">\n' +
 		 				'<span class="twt-date">' + d[i] + '</span>\n'+
 			 			'</a>\n';
