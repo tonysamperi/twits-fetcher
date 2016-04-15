@@ -1,4 +1,5 @@
-$.fn.twitterFetcher = function (settings) {
+(function($){
+	$.fn.twitterFetcher = function (settings) {
 	settings = jQuery.extend({
 		avatar: "default",
 		uniqueId: null,
@@ -148,3 +149,5 @@ $.fn.twitterFetcher = function (settings) {
 		document.getElementsByTagName("head")[0].appendChild(c);
 	});
 };
+
+})(jQuery);
