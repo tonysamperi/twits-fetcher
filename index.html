@@ -37,11 +37,19 @@ http://www.w3.org/TR/html4/loose.dtd>
 		<!-- twitFetcher boot -->
 		<script type="text/javascript">
 			jQuery(document).ready(function ($) {
-				$("#twitCt").twitterFetcher({
+				$("#twitCtIt").twitterFetcher({
 					//widgetid: '592650462698074112',
 					widgetid: '721055643600334849',
 					//widgetid: '592724645574475778',//IW
 					maxTweets: 5,
+					enablePermalink: true
+				});
+				$("#twitCtEng").twitterFetcher({
+					//widgetid: '592650462698074112',
+					widgetid: '721055643600334849',
+					//widgetid: '592724645574475778',//IW
+					maxTweets: 5,
+                    lang: "en",
 					enablePermalink: true
 				});
 			});
@@ -108,7 +116,17 @@ http://www.w3.org/TR/html4/loose.dtd>
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="twitCt">
+			<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<h3>Italian</h3>
+			</div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="twitCtIt">
+                </div>
+            </div>
+			<div class="row">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+				<h3>English</h3>
+			</div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="twitCtEng">
                 </div>
             </div>
             <div class="row">
