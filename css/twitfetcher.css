@@ -13,7 +13,8 @@ div.twt-img-ct img{
 
 .PlayButton {
     font-size: 64px;
-    background-color: transparent
+    background-color: transparent;
+    cursor: pointer;
 }
 
 
