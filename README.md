@@ -56,7 +56,7 @@ jQuery(document).ready(function ($) {
 | **enableLinks** | If true, links in twit will be shown | Boolean | true |
 | **showRetweet** | If true, posts from other users will be retrieved. Otherwise only posts from user will be shown. | Boolean | true |
 | **showImages** | If true, images attached to posts will be shown | Boolean | true |
-| **lang** | Language of Twitter server (could be "it"). | string | en |
+| **lang** | Language of Twitter server: "it", "es" or "en" are available. | string | en |
 | **enablePermalink** | If true, a link to the post will be set in the "posted string" | Boolean | false |
 
 # License
