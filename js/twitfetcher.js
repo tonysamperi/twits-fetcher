@@ -207,7 +207,7 @@
                 '</div>\n' +
                 '<div class="twt-row row">\n' +
                 '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">\n' +
-                w(a[i]) + '\n';
+                '<p class="timeline-Tweet-text">' + w(a[i]) + '</p>\n';
             if (settings.showImages === true && e[i] !== null) {
                 html += e[i];
             }

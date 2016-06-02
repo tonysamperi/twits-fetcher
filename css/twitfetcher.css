@@ -9,13 +9,18 @@ div.twt-img-ct img{
     border-radius: 50%;
 }
 
-
+.timeline-Tweet-text {
+    margin-bottom: 12px;
+    font-weight: 400;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
 
 .PlayButton {
     font-size: 64px;
-    background-color: transparent
+    background-color: transparent;
+    cursor: pointer;
 }
-
 
 .Icon--playCircle {
     width: 100px;
@@ -24,11 +29,13 @@ div.twt-img-ct img{
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center center;
+    border-radius: 100%;
 }
 
 .PlayButton--centered {
     margin-left: -50px;
     margin-top: -50px;
+    border-radius: 100%;
 }
 
 .NaturalImage {
@@ -49,7 +56,6 @@ div.twt-img-ct img{
     position: absolute;
     top: 50%;
     left: 50%;
-    z-index: 520;
 }
 
 .iframect{
