@@ -8,3 +8,61 @@ div.twt-item{
 div.twt-img-ct img{
     border-radius: 50%;
 }
+
+
+
+.PlayButton {
+    font-size: 64px;
+    background-color: transparent
+}
+
+
+.Icon--playCircle {
+    width: 100px;
+    background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%2072%22%3E%3Cpath%20opacity%3D%22.8%22%20fill%3D%22%231DA1F2%22%20d%3D%22M30%2012C16.768%2012%206%2022.765%206%2036s10.766%2023.998%2024%2023.998%2024-10.765%2024-24S43.235%2012%2030%2012z%22%2F%3E%3Cpath%20fill%3D%22%23FFF%22%20d%3D%22M39.2%2034.34l-12-9c-.606-.455-1.418-.528-2.094-.19-.677.34-1.106%201.032-1.106%201.79v18c0%20.758.428%201.45%201.106%201.79.283.14.59.21.894.21.425%200%20.847-.136%201.2-.4l12-9c.503-.377.8-.97.8-1.6%200-.63-.295-1.223-.8-1.6z%22%2F%3E%3Cpath%20fill%3D%22%23FFF%22%20d%3D%22M30%2015c11.598%200%2021%209.402%2021%2021s-9.4%2020.998-21%2020.998-21-9.402-21-21S18.4%2015%2030%2015m0-6C15.112%209%203%2021.11%203%2036s12.112%2026.998%2027%2026.998%2027-12.11%2027-27S44.888%209%2030%209z%22%2F%3E%3C%2Fsvg%3E);
+    height: 100px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+}
+
+.PlayButton--centered {
+    margin-left: -50px;
+    margin-top: -50px;
+}
+
+.NaturalImage {
+    position: relative
+}
+
+.NaturalImage-image {
+    max-width: 100%;
+    max-height: 100%;
+    border: 0;
+    line-height: 0;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.NaturalImage-ctaOverlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 520;
+}
+
+.iframect{
+    overflow:hidden;
+    padding-bottom: 45%;
+    position:relative;
+    width:80%;
+    margin:0 auto;
+}
+.iframect iframe,.iframect object,.iframect embed{
+    height:100%;
+    left:0;
+    position:absolute;
+    top:0;
+    width:100%;
+}

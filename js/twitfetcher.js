@@ -1,6 +1,38 @@
 (function ($) {
     /* SHARED FUNCTIONS */
-    var twitfetcherData = {};
+    var generateYTframe = function (src,columnsClass) {
+        return '<div class="'+columnsClass+'"><div class="iframect"><iframe scrolling="no" frameborder="0" allowtransparency="true"' +
+            'src="' + src + '?autoplay=1" allowfullscreen="true" ' +
+            'title="Media Player" class="FilledIframe"></iframe></div></div>';
+    };
+    var decodeUrl = function (t) {
+        var e = t.split(" ");
+        this.url = decodeURIComponent(e[0].trim()),
+            this.width = +e[1].replace(/w$/, "").trim()
+    };
+    var checkDevice = function (t, e, n) {
+        var i, o, a, s, h = window;
+        if (t = h.devicePixelRatio ? t * h.devicePixelRatio : t,
+                o = e.split(",").map(function (t) {
+                    return new decodeUrl(t.trim())
+                }),
+                n)
+            for (s = 0; s < o.length; s++)
+                o[s].url === n && (i = o[s]);
+        return a = o.reduce(function (e, n) {
+            return n.width < e.width && n.width >= t ? n : e
+        }, o[0]),
+            i && i.width > a.width ? i : a
+    };
+
+    var fixSrc = function (img) {
+        var n, srcSet = $(img).attr("data-srcset"), o = $(img)[0].src;
+        if (!!srcSet) {
+            n = checkDevice($(window).width(), srcSet, o);
+            return n.url;
+        }
+        return "";
+    };
     var imageExists = function (src) {
 
         var deferred = $.Deferred();
@@ -26,10 +58,21 @@
         var day = (d.getDate() + 1) > 9 ?
             (d.getDate()) : "0" + (d.getDate());
         var month = d.getMonth();
-        var month_it = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
-        var month_en = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"];
-        month = lang === "it" ? month_it[month] : month_en[month];
-        var at = lang === "it" ? " alle " : " at ";
+        var months = {
+            it: ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"],
+            en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dec"],
+            es: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        };
+        if (!!months[lang] && !!months[lang][month])
+            month = months[lang][month];
+        else
+            month = months["en"][month];
+        var at = {
+            it: " alle ",
+            en: " at ",
+            es: " a las "
+        };
+        var at = !!at[lang] ? at[lang] : at["en"];
         var d = day + " " + month + at + hh + ":" + mm;
         return d;
     };
@@ -66,7 +109,19 @@
                 //shortUrl = strTrim(shortUrl, 50) + "...";
                 cur.find('a[data-scribe="element:url"]').empty().append(shortUrl);
             }
-            a.push(cur.find(".timeline-Tweet-text").html());
+            var postContent = $(cur.find(".timeline-Tweet-text"));
+            var postLinks = postContent.find("a");
+
+            postLinks.each(function () {
+                var extRef = $(this).attr("data-expanded-url");
+                if (!!extRef) {
+                    $(this).attr("href", extRef);
+                    $(this).html(extRef);
+                }
+            });
+
+
+            a.push(postContent.html());
             b.push(cur.find(".data-tweet-id"));
 
             avatarImg.push(
@@ -77,7 +132,49 @@
             p.push(cur.find('[data-scribe="element:mini_timestamp"]').attr("href"));
             usrName.push(cur.find('[data-scribe="element:screen_name"]').html());
             d.push(datefix(cur.find(".dt-updated").attr("datetime"), settings.lang));
-            e.push(""); //TODO: FIND IMAGES IN POSTS => TRY TO POST ONE TO GET THIS!
+            if (settings.showImages === true) {
+                var row = $('<div class="row"></div>');
+                var media = $(cur.find("div.MediaCard-media"));
+                media.find("footer").remove();
+                var media = media.find("a").not('[role="presentation"]');
+                var countMedia = media.length;
+                var columnsClass = countMedia > 1 ? "col-xs-6" : "col-xs-10 col-xs-offset-1";
+                var columnHtml = '<div class="' + columnsClass + '"></div>';
+                media.each(function (index) {
+                    var elem = $(this);
+                    elem.attr("target","_blank");
+                    var playerSrc = elem.attr("data-player-src");
+                    if (!!playerSrc) {
+                        if (playerSrc.indexOf("youtube") >= 0) {
+                            $("body").one("click", '[data-scribe="element:play_button"]', function (event) {
+                                event.preventDefault();
+                                var target = $(event.target).parents(".row:first");
+                                target.empty().append(generateYTframe(playerSrc,columnsClass));
+                            });
+                            var mediaResult = $(columnHtml).append(elem.html());
+                            row.append(mediaResult);
+                        }
+                        return true;
+                    }
+                    var mediaResult = elem.wrap(columnHtml);
+                    if (index === countMedia - 1) {
+                        if (countMedia % 2 !== 0 && countMedia > 1) {
+                            elem.parent().addClass("col-offset-xs-3");
+                        }
+                    }
+                    innerImg = elem.find("img");
+                    var fixedSrc = fixSrc(innerImg);
+                    if (fixedSrc !== "")
+                        innerImg.attr("src", fixedSrc);
+                    else {
+                        elem.remove();
+                        return true;
+                    }
+                    row.append(mediaResult);
+                });
+
+                e.push(row[0].outerHTML);
+            }
             if (a.length === parseInt(settings.maxTweets))
                 return false;
         });
@@ -110,11 +207,11 @@
                 '</div>\n' +
                 '<div class="twt-row row">\n' +
                 '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">\n' +
-                w(a[i]) + '\n' +
-                '</div>\n';
-            if (settings.showImages === true) {
-                html += e[i] || "";
+                w(a[i]) + '\n';
+            if (settings.showImages === true && e[i] !== null) {
+                html += e[i];
             }
+            html += '</div>\n';
             html += '</div>\n';
             html += '</div>\n' +
                 '</div>\n';
