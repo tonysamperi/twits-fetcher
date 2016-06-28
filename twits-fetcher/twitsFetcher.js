@@ -1,5 +1,24 @@
 (function ($) {
+    var genericError = {
+        it: "Si è verificato un errore tecnico. Non è possibile caricare i Twits!",
+        en: "A technical error has occoured. Cannot load Twits!",
+        es: "Se ha producido un error técnico. No se puede cargar los Twits!"
+    };
     /* SHARED FUNCTIONS */
+    var closeBox = function(){
+        var el = $(this).parents(".twit-fetcher-container");
+      el.fadeOut(undefined,function(){
+          el.remove();
+      });
+    };
+    var generateErrorBox = function(text){
+        return '<div class="twit-fetcher-errorBox"><img class="twit-fetcher-close" src="./twits-fetcher/closeIcon.png" alt="Close"/><p>' + text + '</p></div>';
+    };
+
+    var generateSpinner = function(){
+        return '<div class="twit-fetcher-spinner"><img src="./twits-fetcher/spinner.gif" alt="Loading..."/></div>';
+    };
+
     var generateYTframe = function (src,columnsClass) {
         return '<div class="'+columnsClass+'"><div class="iframect"><iframe scrolling="no" frameborder="0" allowtransparency="true"' +
             'src="' + src + '?autoplay=1" allowfullscreen="true" ' +
@@ -249,6 +268,9 @@
 
         return this.each(function () {
             var $target = $(this);
+            $target.addClass("twit-fetcher-container");
+            var spinner = $(generateSpinner());
+            $target.append(spinner);
             var protocol = window.location.protocol === "https:" ? "https" : "http";
             var url = protocol + "://cdn.syndication.twimg.com/widgets/timelines/" + settings.widgetid + "?&lang=" + (settings.lang || "en") +
                 "&suppress_response_codes=true&rnd=" + Math.random();
@@ -258,6 +280,12 @@
                 cache: 'true',
                 dataType: 'jsonp'
             }).done(function (data) {
+                if(data.headers.status === 404){
+                    var error = data.headers.message || genericError[settings.lang || "en"];
+                    $target.empty().append(generateErrorBox(error));
+                    $("body").off("click.twitsFetcher").on("click.twitsFetcher",".twit-fetcher-close", closeBox);
+                    return;
+                }
                 twtCallback(data, settings, $target);
             });
 
