@@ -287,6 +287,7 @@
                     return;
                 }
                 twtCallback(data, settings, $target);
+                spinner.fadeOut();
             });
 
             return false; //PREVENT USING COLLECTIONS
