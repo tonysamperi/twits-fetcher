@@ -252,7 +252,7 @@
             enableLinks: true,
             showImages: false,
             showRetweet: true,
-            lang: "it",
+            lang: "en",
             enablePermalink: false
         }, settings);
 
