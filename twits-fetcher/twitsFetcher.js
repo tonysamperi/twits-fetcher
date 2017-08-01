@@ -1,4 +1,10 @@
 (function ($) {
+	var script = null;
+	var twtCount = 0;
+	window.__twttrf = {
+		
+	};
+	
     var genericError = {
         it: "Si è verificato un errore tecnico. Non è possibile caricare i Twits!",
         en: "A technical error has occoured. Cannot load Twits!",
@@ -7,9 +13,9 @@
     /* SHARED FUNCTIONS */
     var closeBox = function(){
         var el = $(this).parents(".twit-fetcher-container");
-      el.fadeOut(undefined,function(){
-          el.remove();
-      });
+		el.fadeOut(undefined,function(){
+		  el.remove();
+		});
     };
     var generateErrorBox = function(text){
         return '<div class="twit-fetcher-errorBox"><img class="twit-fetcher-close" src="./twits-fetcher/closeIcon.png" alt="Close"/><p>' + text + '</p></div>';
@@ -45,7 +51,9 @@
     };
 
     var fixSrc = function (img) {
-        var n, srcSet = $(img).attr("data-srcset"), o = $(img)[0].src;
+        var n;
+		var srcSet = $(img).attr("data-srcset");
+		var o = $(img).attr("src");
         if (!!srcSet) {
             n = checkDevice($(window).width(), srcSet, o);
             return n.url;
@@ -105,7 +113,7 @@
         }).replace(/class=".*?"|data-query-source=".*?"|dir=".*?"|rel=".*?"/gi, "");
     };
 
-    var twtCallback = function (response, settings, $target) {
+    var  twtCallback = function (response, settings, $target) {
 
         var list = $(response.body).find('*[data-scribe="component:tweet"]');
         var user = [], usrLnk = [], usrName = [], a = [], b = [], avatarImg = [], d = [], e = [], p = [];
@@ -243,7 +251,7 @@
     };
 
     $.fn.twitterFetcher = function (settings) {
-
+		
         settings = jQuery.extend({
             avatar: "default",
             uniqueId: null,
@@ -267,19 +275,34 @@
         }
 
         return this.each(function () {
-            var $target = $(this);
+            twtCount++;
+			var $target = $(this);
             $target.addClass("twit-fetcher-container");
             var spinner = $(generateSpinner());
             $target.append(spinner);
             var protocol = window.location.protocol === "https:" ? "https" : "http";
+			var callbackProp = "callback"+twtCount;
+			window.__twttrf[callbackProp] = function(data){
+				console.info("TWT CALLBACK DATA", data);
+				spinner.fadeOut();
+				twtCallback(data, settings, $target);
+			};
+			
             var url = protocol + "://cdn.syndication.twimg.com/widgets/timelines/" + settings.widgetid + "?&lang=" + (settings.lang || "en") +
-                "&suppress_response_codes=true&rnd=" + Math.random();
-            $.ajax({
+                "&callback=__twttrf." + callbackProp + "&suppress_response_codes=true&rnd=" + Math.random();
+				
+			var url2 = protocol + "://cdn.syndication.twimg.com/widgets/timelines/" + "502160051226681344" + "?&lang=en&callback=__twttrf.callback&suppress_response_codes=true&rnd=0.5226350122345014"
+			
+			var url3 = protocol + "://cdn.syndication.twimg.com/widgets/timelines/" + "502160051226681344" + "?&lang=en&callback=__twtcbs.callback&suppress_response_codes=true&rnd=0.5226350122345014"
+				
+            /*$.ajax({
                 url: url,
                 contentType: 'application/json',
                 cache: 'true',
-                dataType: 'jsonp'
-            }).done(function (data) {
+                dataType: 'json'
+            })
+			*/
+			/*$.getJSON(url).done(function (data) {
                 if(data.headers.status === 404){
                     var error = data.headers.message || genericError[settings.lang || "en"];
                     $target.empty().append(generateErrorBox(error));
@@ -288,7 +311,23 @@
                 }
                 twtCallback(data, settings, $target);
                 spinner.fadeOut();
-            });
+            });*/
+			
+			var head = document.getElementsByTagName("head")[0];
+			if(script !== null){
+				head.removeChild(script);
+			}
+			script = document.createElement("script");
+			script.type = "text/javascript";
+			script.onerror = function(a){
+				console.info("TFERROR", a);
+				var error = genericError[settings.lang || "en"];
+				$target.empty().append(generateErrorBox(error));
+				$("body").off("click.twitsFetcher").on("click.twitsFetcher",".twit-fetcher-close", closeBox);
+			}
+
+			script.src = url;
+			head.appendChild(script);
 
             return false; //PREVENT USING COLLECTIONS
         });
